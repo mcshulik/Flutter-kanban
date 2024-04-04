@@ -124,6 +124,8 @@ void onConnectTasks(StompFrame frame) async{
             taskInfoList = data['taskList'];
           }
           else {
+            taskInfoList.removeWhere((task) => task['id'] == data['id']);
+            //taskInfoList.remove(data['id']);
             taskInfoList.add(data);
           }
 
@@ -1115,7 +1117,7 @@ class _UserPage extends State<UserPage> {
                         statusId = 3;
                       }
 
-                      taskInfoList.remove(item);
+                      //taskInfoList.remove(item);
 
                       var taskId = item["id"];
                       //final taskStatus = item['taskStatus'];
@@ -1146,6 +1148,8 @@ class _UserPage extends State<UserPage> {
                       } catch (e) {
                         // Если возникла ошибка в процессе выполнения запроса, вы можете обработать её здесь
                         print('Ошибка при выполнении PUT-запроса: $e');
+                      } finally {
+
                       }
                     });
                   }
@@ -1402,8 +1406,6 @@ class NewTextScreen extends StatefulWidget {
 
 class NewTextScreenState extends State<NewTextScreen> {
 
-
-
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   //bool _isExpanded = false;
@@ -1413,6 +1415,45 @@ class NewTextScreenState extends State<NewTextScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
+
+
+    /*final response = await http.put(
+      taskSendUrl,
+      //body: jsonEncode(requestBody),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );*/
+
+
+    var getUsersUrl = apiUrl.replace(
+        path: '/user');
+
+    // Отправляем GET-запрос
+    http.get(
+        getUsersUrl)
+        .then((response) {
+      // Проверяем статус ответа
+      if (response.statusCode == 200) {
+        // Выводим тело ответа (данные)
+        print('Response body: ${response.body}');
+      } else {
+        // Если сервер вернул ошибку, выводим статус и сообщение об ошибке
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    })
+        .catchError((error) {
+      // Если произошла ошибка во время выполнения запроса, выводим её
+      print('Error during GET request: $error');
+    });
+
+
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -1475,11 +1516,11 @@ class NewTextScreenState extends State<NewTextScreen> {
                       };
                       var messageString = json.encode(messageJson);
 
-                      var url = Uri.parse('http://91.149.187.115:8060/task/user/$uuid');
+                      var postTaskStatusUrl = apiUrl.replace(path: '/task/user/$uuid');
 
                       // Отправляем POST-запрос на сервер
                       final response = await http.post(
-                        url,
+                        postTaskStatusUrl,
                         body: messageString,
                         headers: {
                           'Content-Type': 'application/json', // указываем тип контента
