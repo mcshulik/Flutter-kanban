@@ -2,9 +2,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="flutter_kanban"
+        android:label="QPer"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/new_ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
